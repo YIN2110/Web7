@@ -1,0 +1,29 @@
+{% extends 'guest_layout.html' %}
+
+{% block content %}
+<h2 class="text-center my-4">My Favorite Products</h2>
+
+<div class="container">
+    <div class="row">
+        {% for favorite in favorite_items %}
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <img src="{{ favorite.item.url }}" class="card-img-top" alt="{{ favorite.item.name }}" style="height: 200px; object-fit: cover;">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ favorite.item.name }}</h5>
+                    <p class="card-text">{{ favorite.item.description|truncatewords:15 }}</p>
+                    <p class="card-text"><strong>Price:</strong> {{ favorite.item.price_per_day }} Yuan/Day</p>
+
+                    <div class="mt-auto">
+                        <div class="btn-group w-100" role="group">
+                            <a href="/myapp/rent_item/{{ favorite.item.id }}" class="btn btn-primary">Rent</a>
+                            <a href="/myapp/item_detail/{{ favorite.item.id }}" class="btn btn-secondary">Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

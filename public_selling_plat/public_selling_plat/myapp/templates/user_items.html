@@ -1,0 +1,28 @@
+{% extends 'guest_layout.html' %}
+
+{% block content %}
+<h2 class="text-center my-4">My Published Products</h2>
+
+<div class="container">
+    <div class="row">
+        {% for item in items %}
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ item.name }}</h5>
+                    <p class="card-text">{{ item.description }}</p>
+                    <p class="card-text"><strong>Price:</strong> {{ item.price_per_day }} Yuan/Day</p>
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-between">
+                        <a href="/myapp/item_detail/{{ item.id }}" class="btn btn-primary">View Details</a>
+                        <a href="/myapp/item_edit/{{ item.id }}" class="btn btn-warning">Edit</a>
+                        <a href="/myapp/item_delete/{{ item.id }}" class="btn btn-danger">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

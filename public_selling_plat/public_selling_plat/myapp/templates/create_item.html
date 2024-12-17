@@ -1,0 +1,84 @@
+{% extends 'guest_layout.html' %}
+
+{% block content %}
+<h2 class="text-center mb-4">Create Product</h2>
+<div class="container">
+    <form method="POST" class="needs-validation" novalidate>
+        {% csrf_token %}
+
+        <!-- Product Name -->
+        <div class="mb-3">
+            <label for="name" class="form-label">Product Name:</label>
+            <input type="text" class="form-control" name="name" required>
+            <div class="invalid-feedback">Please enter the product name</div>
+        </div>
+
+        <!-- Product Description -->
+        <div class="mb-3">
+            <label for="description" class="form-label">Product Description:</label>
+            <textarea class="form-control" name="description" rows="3" required></textarea>
+            <div class="invalid-feedback">Please enter the product description</div>
+        </div>
+
+        <!-- Product Category -->
+        <div class="mb-3">
+            <label for="category" class="form-label">Product Category:</label>
+            <input type="text" class="form-control" name="category" required>
+            <div class="invalid-feedback">Please enter the product category</div>
+        </div>
+
+        <!-- Storage Location -->
+        <div class="mb-3">
+            <label for="location" class="form-label">Storage Location:</label>
+            <input type="text" class="form-control" name="location" required>
+            <div class="invalid-feedback">Please enter the storage location</div>
+        </div>
+
+        <!-- Daily Rent -->
+        <div class="mb-3">
+            <label for="price_per_day" class="form-label">Daily Rent:</label>
+            <input type="number" class="form-control" name="price_per_day" required>
+            <div class="invalid-feedback">Please enter the daily rent</div>
+        </div>
+
+        <!-- Rental Start Date -->
+        <div class="mb-3">
+            <label for="available_from" class="form-label">Rental Start Date:</label>
+            <input type="date" class="form-control" name="available_from" required>
+            <div class="invalid-feedback">Please select a start date</div>
+        </div>
+
+        <!-- Rental End Date -->
+        <div class="mb-3">
+            <label for="available_to" class="form-label">Rental End Date (optional):</label>
+            <input type="date" class="form-control" name="available_to">
+        </div>
+
+        <!-- Product Link -->
+        <div class="mb-3">
+            <label for="url" class="form-label">Product Link (optional):</label>
+            <input type="url" class="form-control" name="url">
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary btn-lg w-100">Submit</button>
+    </form>
+</div>
+
+<script>
+    // Bootstrap Form Validation
+    (function () {
+        'use strict';
+        var forms = document.querySelectorAll('.needs-validation');
+        Array.prototype.slice.call(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>
+{% endblock %}

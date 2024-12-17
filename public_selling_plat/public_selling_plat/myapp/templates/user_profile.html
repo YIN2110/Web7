@@ -1,0 +1,29 @@
+{% extends 'guest_layout.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">Recommended Hotels</h2>
+    <div class="row">
+        {% for hotel in recommended_hotels %}
+        {% if hotel.image_link %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card mb-4 shadow">
+                <img src="{{ hotel.image_link }}" class="card-img-top" alt="{{ hotel.name }}" style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ hotel.name }}</h5>
+                    <p class="card-text mb-2">
+                        <span class="badge bg-primary me-2">Rating: {{ hotel.rating }} / 5</span>
+                        <span class="badge bg-success">Review Count: {{ hotel.review_count }}</span>
+                    </p>
+                    <p class="card-text text-muted">{{ hotel.address }}</p>
+                    <div class="d-grid gap-2">
+                        <a href="/myapp/hotel_detail_view/{{hotel.id}}" class="btn btn-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

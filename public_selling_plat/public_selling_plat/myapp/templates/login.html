@@ -1,0 +1,212 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shared Rental Platform</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <style>
+        /* Original styles remain unchanged */
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        html {
+            height: 100%;
+        }
+        body {
+            background-image: url('https://th.bing.com/th/id/R.556d9bf95b506e86c11022a342466647?rik=efZkxOhORurS8w&riu=http%3a%2f%2fwww.donews.com%2fidonews%2farticle%2fUpload%2fimage%2f20150215%2f20150215105824_55639.jpg&ehk=J721LZmb792pjlwl%2bfIkhwXLufMplt9n1hvLa0EGBc8%3d&risl=&pid=ImgRaw&r=0&sres=1&sresct=1');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        .login-container {
+            width: 600px;
+            height: 315px;
+            margin: 0 auto;
+            margin-top: 10%;
+            border-radius: 15px;
+            box-shadow: 0 10px 50px 0px rgb(59, 45, 159);
+            background-color: rgb(95, 76, 194);
+        }
+        .left-container {
+            display: inline-block;
+            width: 330px;
+            border-top-left-radius: 15px;
+            border-bottom-left-radius: 15px;
+            padding: 60px;
+            background-image: linear-gradient(to bottom right, rgb(118, 76, 163), rgb(92, 103, 211));
+        }
+        .title {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 200;
+        }
+        .title span {
+            border-bottom: 3px solid rgb(237, 221, 22);
+        }
+        .input-container {
+            padding: 20px 0;
+        }
+        input {
+            border: 0;
+            background: none;
+            outline: none;
+            color: #fff;
+            margin: 20px 0;
+            display: block;
+            width: 100%;
+            padding: 5px 0;
+            transition: .2s;
+            border-bottom: 1px solid rgb(199, 191, 219);
+        }
+        input:hover {
+            border-bottom-color: #fff;
+        }
+        ::-webkit-input-placeholder {
+            color: rgb(199, 191, 219);
+        }
+        .message-container {
+            font-size: 14px;
+            transition: .2s;
+            color: rgb(199, 191, 219);
+            cursor: pointer;
+        }
+        .message-container:hover {
+            color: #fff;
+        }
+        .right-container {
+            width: 145px;
+            display: inline-block;
+            height: calc(100% - 120px);
+            vertical-align: top;
+            padding: 60px 0;
+        }
+        .regist-container {
+            text-align: center;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 200;
+        }
+        .regist-container span {
+            border-bottom: 3px solid rgb(237, 221, 22);
+        }
+        .action-container {
+            font-size: 10px;
+            color: #fff;
+            text-align: center;
+            position: relative;
+            top: 200px;
+        }
+        .action-container span {
+            border: 1px solid rgb(237, 221, 22);
+            padding: 10px;
+            display: inline;
+            line-height: 20px;
+            border-radius: 20px;
+            position: absolute;
+            bottom: 10px;
+            left: calc(72px - 20px);
+            transition: .2s;
+            cursor: pointer;
+        }
+        .action-container span:hover {
+            background-color: rgb(237, 221, 22);
+            color: rgb(95, 76, 194);
+        }
+        a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <form @submit.prevent="handleLogin">
+            {% csrf_token %}
+            <div class="login-container">
+                <div class="left-container">
+                    <div class="title"><span>Login</span></div>
+                    <div class="input-container">
+                        <input v-model="username" type="text" name="username" placeholder="Username">
+                        <input v-model="password" type="password" name="password" placeholder="Password">
+                    </div>
+                    <div class="message-container" v-if="error">
+                        <span style="color: red;">{{ error }}</span>
+                    </div>
+                </div>
+                <div class="right-container">
+                    <div class="regist-container">
+                        <span class="regist"><a href="regist" style="color:white">Register</a></span>
+                        <span class="regist"><a href="reset_password" style="color:white">Forget？</a></span>
+                    </div>
+                    <div class="action-container">
+                        <span><button type="submit" style="background-color:transparent;border:0">Login</button></span>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Function to get CSRF Token
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Check if this cookie starts with the name we want
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        new Vue({
+            el: '#app',
+            data: {
+                username: '',
+                password: '',
+                error: ''
+            },
+            methods: {
+                handleLogin() {
+                    axios.post('/myapp/login', {
+                        username: this.username,
+                        password: this.password
+                    }, {
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        // Uncomment the following line if credentials (like cookies) need to be sent
+                        // withCredentials: true
+                    })
+                    .then(response => {
+                        if (response.data.redirect) {
+                            window.location.href = response.data.redirect;
+                        }
+                        // No need to update CSRF token, as we get it from the cookie
+                    })
+                    .catch(error => {
+                        if (error.response && error.response.data.error) {
+                            this.error = error.response.data.error;
+                        } else {
+                            this.error = 'Login failed, please try again';
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>

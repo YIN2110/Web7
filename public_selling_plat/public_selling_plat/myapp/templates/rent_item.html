@@ -1,0 +1,52 @@
+{% extends 'guest_layout.html' %}
+
+{% block content %}
+<h2 class="text-center my-4">Rental Product: {{ item.name }}</h2>
+
+<div class="container">
+    <form method="POST" action="/myapp/rent_item/{{ item.id }}/confirm" class="needs-validation" novalidate>
+        {% csrf_token %}
+
+        <!-- Rental Start Date -->
+        <div class="mb-3">
+            <label for="start_date" class="form-label">Rental Start Date:</label>
+            <input type="date" class="form-control" name="start_date" required>
+            <div class="invalid-feedback">
+                Please select a start date.
+            </div>
+        </div>
+
+        <!-- Rental End Date -->
+        <div class="mb-3">
+            <label for="end_date" class="form-label">Rental End Date:</label>
+            <input type="date" class="form-control" name="end_date" required>
+            <div class="invalid-feedback">
+                Please select an end date.
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary btn-lg">Confirm Rental</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Bootstrap form validation
+    (function () {
+        'use strict';
+        var forms = document.querySelectorAll('.needs-validation');
+        Array.prototype.slice.call(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>
+
+{% endblock %}

@@ -1,0 +1,171 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static '/plugins/bootstrap-3.4.1/css/bootstrap.css' %}">
+    <!-- Import FullCalendar CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css"/>
+
+    <!-- Import jQuery and Moment.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+    <!-- Import FullCalendar library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+
+    <title>Rental Platform</title>
+    <style>
+
+        body {
+          font-family: 'Roboto', sans-serif;
+          margin: 0;
+          padding: 0;
+        }
+
+        .navbar {
+          background-color: #2c3e50;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 10px 20px;
+        }
+
+        .nav-links {
+          display: flex;
+          align-items: center;
+        }
+
+        .nav-link {
+          color: white;
+          text-decoration: none;
+          margin-right: 20px;
+          transition: 0.3s;
+        }
+
+        .nav-link:hover {
+          opacity: 0.7;
+        }
+
+        .dropdown {
+          position: relative;
+          display: inline-block;
+        }
+
+        .dropdown-content {
+          display: none;
+          position: absolute;
+          background-color: #f9f9f9;
+          min-width: 160px;
+          box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+          padding: 12px 16px;
+          z-index: 1;
+        }
+
+        .dropdown:hover .dropdown-content {
+          display: block;
+        }
+
+        .dropdown-content a {
+          color: black;
+          text-decoration: none;
+          display: block;
+        }
+
+        .dropdown-content a:hover {
+          color: #2c3e50;
+        }
+
+        .footer-background {
+            background-image: url('{% static "/img/smart_traffic.png" %}');
+            background-size: cover;
+            background-repeat: no-repeat;
+            height: 200px;
+            width: 100%;
+        }
+        {% block style %}{% endblock %}
+
+    </style>
+    {% block head %}{% endblock %}
+</head>
+<body>
+
+<div class="navbar">
+    <div class="nav-links">
+        <a href="/myapp/all_available_items" class="nav-link">Rental Hall</a>
+        <a href="/myapp/create_item" class="nav-link">Upload Product</a>
+        <a href="/myapp/user_items" class="nav-link">My Products</a>
+        <a href="/myapp/my_rented_items" class="nav-link">My Rentals</a>
+        <a href="/myapp/my_orders" class="nav-link">My Bills</a>
+        <a href="/myapp/my_likes" class="nav-link">My Likes</a>
+        <a href="/myapp/my_favorites" class="nav-link">My Favorites</a>
+                <a href="/myapp/recommended_page" class="nav-link">Recommended</a>
+
+        <a href="/myapp/email_single_presentation" class="nav-link">View Emails</a>
+        <div class="dropdown">
+            <a href="#" class="nav-link">Help Center</a>
+            <div class="dropdown-content">
+                <a href="/myapp/display_questions">Usage Help</a>
+                <a href="/myapp/email_editor">Send Email</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="dropdown">
+        <a href="#" class="nav-link">{{request.session.info.name}}</a>
+        <div class="dropdown-content">
+            <a href="/myapp/log_out">Log Out</a>
+            <a href="/myapp/guest_profile_display">Profile Info</a>
+            <a href="/myapp/guest_profile_edit">Profile Maintenance</a>
+        </div>
+    </div>
+</div>
+
+{% block content %}{% endblock %}
+
+<!-- Script to record game duration -->
+<script>
+    // Function to get CSRF Token
+    function getCookie(name) {
+        // Same as before
+    }
+
+    // On page load, check if game duration needs to be recorded
+    $(document).ready(function() {
+        var startTime = sessionStorage.getItem('gameStartTime');
+        if (startTime) {
+            var endTime = new Date();
+            var duration = (endTime - new Date(startTime)) / 1000; // Unit: seconds
+            var gameId = sessionStorage.getItem('currentGameId');
+            if (gameId) {
+                // Send request to record game duration
+                $.ajax({
+                    url: '/myapp/record_game_time/' + gameId + '/',
+                    type: 'POST',
+                    data: JSON.stringify({ duration: duration }),
+                    contentType: 'application/json',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    success: function(response) {
+                        // Clear sessionStorage data
+                        sessionStorage.removeItem('gameStartTime');
+                        sessionStorage.removeItem('currentGameId');
+                        console.log('Game duration recorded');
+                    },
+                    error: function(error) {
+                        console.error('Unable to record game duration', error);
+                    }
+                });
+            }
+        }
+    });
+</script>
+
+<!-- Other scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
+<script src="{% static '/plugins/bootstrap-3.4.1/js/bootstrap.js' %}"></script>
+</body>
+</html>

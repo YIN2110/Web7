@@ -1,0 +1,143 @@
+{% extends 'basic_layout.html' %}
+
+{% block content %}
+<div id="app" style="display:flex;justify-content:center;align-items:center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white text-center">
+                <h4>Registration Form</h4>
+            </div>
+            <div class="card-body">
+                <form @submit.prevent="handleRegister" id="registrationForm">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="usernameInput">Username</label>
+                        <input v-model="username" type="text" class="form-control" id="usernameInput" placeholder="Enter Username" required>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label for="passwordInput">Password</label>
+                        <input v-model="password" type="password" class="form-control" id="passwordInput" placeholder="Enter Password" required>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label for="confirmPasswordInput">Confirm Password</label>
+                        <input v-model="confirmPassword" type="password" class="form-control" id="confirmPasswordInput" placeholder="Re-enter Password" required>
+                        <small v-if="passwordError" class="form-text text-danger">{{ passwordError }}</small>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label for="emailInput">Email</label>
+                        <input v-model="email" type="email" class="form-control" id="emailInput" placeholder="example@example.com" required>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label for="snameInput">Name</label>
+                        <input v-model="sname" type="text" class="form-control" id="snameInput" placeholder="Enter Name" required>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label for="schoolInput">District</label>
+                        <input v-model="school" type="text" class="form-control" id="schoolInput" placeholder="Enter District" required>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label for="sexInput">Gender</label>
+                        <select v-model="sex" class="form-control" id="sexInput" required>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label for="phoneInput">Phone Number</label>
+                        <input v-model="phone" type="text" class="form-control" id="phoneInput" placeholder="Enter Phone Number" required>
+                    </div>
+
+                    <div class="form-group mt-4 text-center">
+                        <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Vue and Axios scripts at the bottom of the template -->
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+<script>
+    // Function to get CSRF Token
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Check if this cookie starts with the name we want
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    new Vue({
+        el: '#app',
+        data: {
+            username: '',
+            password: '',
+            confirmPassword: '',
+            email: '',
+            sname: '',
+            school: '',
+            sex: 'Male',
+            phone: '',
+            passwordError: ''
+        },
+        methods: {
+            handleRegister() {
+                if (this.password !== this.confirmPassword) {
+                    this.passwordError = 'The passwords do not match!';
+                    return;
+                } else if (this.password.length < 6) {
+                    this.passwordError = 'The password must be at least 6 characters long!';
+                    return;
+                } else {
+                    this.passwordError = '';
+                }
+
+                axios.post('/myapp/regist', {
+                    username: this.username,
+                    password: this.password,
+                    email: this.email,
+                    sname: this.sname,
+                    school: this.school,
+                    sex: this.sex,
+                    phone: this.phone
+                }, {
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    // Uncomment the following line if credentials (like cookies) need to be sent
+                    // withCredentials: true
+                }).then(response => {
+                    alert(response.data.message);
+                    window.location.href = '/myapp/login'; // Redirect to the login page after successful registration
+                }).catch(error => {
+                    if (error.response && error.response.data.error) {
+                        alert(error.response.data.error);
+                    } else {
+                        alert('Registration failed, please try again');
+                    }
+                    // No need to refresh the page, error message is already displayed
+                });
+            }
+        }
+    });
+</script>
+
+{% endblock %}

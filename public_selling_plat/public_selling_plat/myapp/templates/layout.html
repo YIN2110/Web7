@@ -1,0 +1,98 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static '/plugins/bootstrap-3.4.1/css/bootstrap.css' %}">
+    <title>Rental Backend</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .sidebar {
+            height: 100%;
+            width: 200px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #2c3e50;
+            overflow-x: hidden;
+            padding-top: 20px;
+        }
+
+        .sidebar a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 18px;
+            color: white;
+            display: block;
+        }
+
+        .sidebar a:hover {
+            color: #f1f1f1;
+        }
+
+        .main-content {
+            margin-left: 200px;
+            padding: 20px;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 10px 20px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .navbar a:hover {
+            opacity: 0.7;
+        }
+
+        {% block style %}{% endblock %}
+    </style>
+    {% block head %}{% endblock %}
+</head>
+<body>
+
+<div class="sidebar">
+    <a href="/myapp/manage_users">User Management</a>
+    <a href="/myapp/email_presentation" class="nav-link">Email Management</a>
+    <a href="/myapp/upload_question" class="nav-link">Platform Announcements</a>
+    <a href="/myapp/manage_questions" class="nav-link">Announcement Management</a>
+    <a href="/myapp/login_log">System Log</a>
+    <a href="/myapp/log_out">Log Out</a>
+</div>
+
+<div class="main-content">
+    <div class="navbar">
+        <div class="dropdown">
+            <a href="#">{{request.session.info.name}}</a>
+            <div class="dropdown-content">
+                <a href="/myapp/log_out">Log Out</a>
+            </div>
+        </div>
+    </div>
+    {% block content %}{% endblock %}
+</div>
+{% block javascript %}
+{% endblock %}
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+<script src="{% static '/plugins/bootstrap-3.4.1/js/bootstrap.js' %}"></script>
+<script src="{% static '/plugins/bootstrap-3.4.1/js/jquery-3.6.0.js' %}"></script>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</body>
+</html>
